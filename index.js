@@ -1,17 +1,21 @@
-const fs = require('fs');
-const qrcode = require('qrcode');
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
 
-function generateQRCode(link, outputFileName) {
-  qrcode.toFile(outputFileName, link, (err) => {
-    if (err) {
-      console.error('Error generating QR code:', err);
-    } else {
-      console.log(`QR code image saved as ${outputFileName}`);
-    }
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(morgan("dev"));
+
+require("dotenv").config();
+
+const index = require('./routes/index.js');
+app.use('/', index);
+
+app.listen(8000, () => {
+    console.log("Server running on 8000!");
   });
-}
-
-// Usage:
-const link = ''; // Replace with your link
-const outputFileName = 'qrcode.png'; // Replace with the desired output file name
-generateQRCode(link, outputFileName);
